@@ -1,17 +1,20 @@
+import base64
+import binascii
 import os
 import re
 import sqlite3
 from functools import wraps
 
 from flask import (Flask, render_template, request, redirect,
-                   url_for, session, flash, abort)
+                   url_for, session, flash, abort, jsonify)
 from werkzeug.security import generate_password_hash, check_password_hash
 
 import model  # TF-IDF + Logistic Regression classifier
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "change-this-secret-key")
-app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # 5 MB upload limit
+app.config["MAX_CONTENT_LENGTH"] = 8 * 1024 * 1024  # request limit (file is base64 encoded by the browser)
+MAX_LOG_BYTES = 5 * 1024 * 1024  # real log file limit
 
 # ---------------------------------------------------------------------------
 # Database layer: MySQL when DB_HOST is set (XAMPP/WAMP or cloud), else SQLite
@@ -166,20 +169,39 @@ def about():
 @login_required
 def upload():
     if request.method == "POST":
+        # The upload page base64-encodes the file in the browser (encoded=1) so that
+        # attack strings inside a log (SQL injection, <script> ...) are not mistaken
+        # for a real attack by the hosting firewall. Plain uploads still work too.
+        encoded = request.form.get("encoded") == "1"
+
+        def fail(msg):
+            if encoded:
+                return jsonify(error=msg), 400
+            flash(msg, "error")
+            return redirect(url_for("upload"))
+
         f = request.files.get("logfile")
         if not f or not f.filename:
-            flash("Please choose a log file.", "error")
-            return redirect(url_for("upload"))
+            return fail("Please choose a log file.")
         raw = f.read()
+        filename = f.filename
+        if encoded:
+            try:
+                raw = base64.b64decode(raw)
+            except (binascii.Error, ValueError):
+                return fail("Could not read the file. Please try again.")
+            filename = request.form.get("orig_name") or "upload.txt"
+        if len(raw) > MAX_LOG_BYTES:
+            return fail("File too large (max 5 MB).")
         if b"\x00" in raw[:2048]:
-            flash("Invalid file: please upload a text log file.", "error")
-            return redirect(url_for("upload"))
+            return fail("Invalid file: please upload a text log file.")
         prediction, total, bad = model.classify_text(raw.decode("utf-8", errors="ignore"))
         if prediction is None:
-            flash("The file is empty.", "error")
-            return redirect(url_for("upload"))
+            return fail("The file is empty.")
         run("INSERT INTO logs (filename, prediction, username) VALUES (?, ?, ?)",
-            (f.filename[:200], prediction, session["username"]), commit=True)
+            (filename[:200], prediction, session["username"]), commit=True)
+        if encoded:
+            return jsonify(redirect=url_for("results"))
         return redirect(url_for("results"))
     return render_template("upload.html")
 
