@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="min-h-screen flex items-center justify-center px-4">
+  <div class="card max-w-2xl w-full text-center p-8 md:p-10">
+    <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3">Smart Log Monitoring and Intrusion Detection System</h1>
+    <h2 class="text-lg font-semibold text-orange-400 mb-4">AI Powered Network Security Platform</h2>
+    <p class="text-slate-200 text-sm md:text-base mb-6">Monitor system logs intelligently and detect cyber intrusions using Artificial Intelligence. Upload log files, analyze threats, and generate real-time security predictions instantly.</p>
+    <div class="flex justify-center gap-3 flex-wrap">
+      <a href="{{ url_for('signup') }}" class="btn-green text-white font-semibold px-6 py-2 rounded-lg">📝 Sign Up</a>
+      <a href="{{ url_for('login') }}" class="btn-orange text-white font-semibold px-6 py-2 rounded-lg">🔑 Login</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

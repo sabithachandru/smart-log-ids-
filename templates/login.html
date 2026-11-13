@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Login | Smart Log Monitoring{% endblock %}
+{% block content %}
+<div class="min-h-screen flex items-center justify-center px-4">
+  <div class="card w-full max-w-sm p-7">
+    <h1 class="text-3xl font-extrabold text-white text-center">Login</h1>
+    <p class="text-slate-200 text-xs text-center mt-1 mb-5">Smart Log Monitoring and Intrusion Detection System</p>
+    <form method="post" class="space-y-3">
+      <label class="block text-sm">Username
+        <input name="username" required class="mt-1 w-full rounded-lg px-3 py-2 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-orange-400">
+      </label>
+      <label class="block text-sm">Password
+        <div class="relative mt-1">
+          <input id="pw" name="password" type="password" required class="w-full rounded-lg px-3 py-2 pr-10 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-orange-400">
+          <button type="button" onclick="togglePw()" class="absolute right-3 top-2 text-slate-500" aria-label="Show password">👁</button>
+        </div>
+      </label>
+      <button class="btn-orange w-full text-white font-semibold py-2 rounded-lg">🔑 Login</button>
+    </form>
+    <p class="text-center text-sm mt-4">New user? <a class="underline" href="{{ url_for('signup') }}">Sign Up</a></p>
+    <p class="text-center text-sm mt-3"><a class="underline" href="{{ url_for('index') }}">← Back to Home</a></p>
+  </div>
+</div>
+<script>
+function togglePw() { const p = document.getElementById('pw'); p.type = p.type === 'password' ? 'text' : 'password'; }
+</script>
+{% endblock %}

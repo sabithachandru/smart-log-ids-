@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+<div class="min-h-screen flex items-center justify-center px-4">
+  <div class="card w-full max-w-sm p-7">
+    <h1 class="text-3xl font-extrabold text-white text-center mb-5">Sign Up</h1>
+    <form method="post" class="space-y-3">
+      <input name="username" required minlength="3" maxlength="30" pattern="[A-Za-z0-9_]+" placeholder="Username" title="Letters, numbers and underscore only" class="w-full rounded-lg px-3 py-2 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-green-400">
+      <div class="relative">
+        <input id="pw" name="password" type="password" required minlength="6" placeholder="Password" class="w-full rounded-lg px-3 py-2 pr-10 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-green-400">
+        <button type="button" onclick="togglePw()" class="absolute right-3 top-2 text-slate-500" aria-label="Show password">👁</button>
+      </div>
+      <button class="btn-green w-full text-white font-semibold py-2 rounded-lg">Sign Up</button>
+    </form>
+    <p class="text-center text-sm mt-4">Already have account? <a class="underline" href="{{ url_for('login') }}">Login</a></p>
+    <p class="text-center text-sm mt-3"><a class="underline" href="{{ url_for('index') }}">← Back to Home</a></p>
+  </div>
+</div>
+<script>
+function togglePw() { const p = document.getElementById('pw'); p.type = p.type === 'password' ? 'text' : 'password'; }
+</script>
+{% endblock %}

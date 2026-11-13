@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Smart Log Monitoring and Intrusion Detection System{% endblock %}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { background: #2b2f33; color: #e5e7eb; font-family: "Segoe UI", system-ui, sans-serif; min-height: 100vh; }
+  .card { background: rgba(100, 116, 139, 0.45); border-radius: 1rem; }
+  .btn-green { background: #3fae6a; } .btn-green:hover { background: #35965a; }
+  .btn-orange { background: #e8845a; } .btn-orange:hover { background: #d4724a; }
+  .btn-red { background: #e5484d; } .btn-red:hover { background: #cc3a3f; }
+</style>
+</head>
+<body>
+{% with msgs = get_flashed_messages(with_categories=true) %}
+  {% if msgs %}
+  <div class="max-w-3xl mx-auto px-4 pt-4">
+    {% for cat, m in msgs %}
+      <div class="mb-2 px-4 py-2 rounded-lg text-sm {{ 'bg-red-900/70 text-red-100' if cat == 'error' else 'bg-green-900/70 text-green-100' }}">{{ m }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endwith %}
+{% block content %}{% endblock %}
+</body>
+</html>

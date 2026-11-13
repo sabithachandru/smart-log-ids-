@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% set cfg = {
+  'results':  {'title': '📊 Prediction Results', 'sub': 'Smart Log Monitoring and Intrusion Detection System', 'tc': 'text-white', 'head': 'bg-slate-600'},
+  'intrusion': {'title': '🚨 Intrusion Files', 'sub': 'Detected malicious activities', 'tc': 'text-red-400', 'head': 'bg-rose-900/70'},
+  'normal':   {'title': '✅ Normal Files', 'sub': 'Safe and trusted system logs', 'tc': 'text-green-400', 'head': 'bg-emerald-800/80'}
+}[kind] %}
+{% block title %}{{ cfg.title }}{% endblock %}
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-6">
+  <div class="flex items-start justify-between">
+    <div>
+      <h1 class="text-2xl font-bold {{ cfg.tc }}">{{ cfg.title }}</h1>
+      <p class="text-xs text-slate-300">{{ cfg.sub }}</p>
+    </div>
+    <a href="{{ url_for('dashboard') }}" class="btn-orange text-white text-sm font-semibold px-4 py-2 rounded-lg">Dashboard</a>
+  </div>
+  <div class="mt-8 overflow-x-auto rounded-2xl card">
+    <table class="w-full text-sm text-center">
+      <thead class="{{ cfg.head }} text-white">
+        <tr><th class="px-4 py-3 text-left">ID</th><th class="px-4 py-3">File Name</th><th class="px-4 py-3">Prediction</th><th class="px-4 py-3">Uploaded Time</th><th class="px-4 py-3">Action</th></tr>
+      </thead>
+      <tbody>
+      {% for r in rows %}
+        <tr class="border-t border-slate-500/40">
+          <td class="px-4 py-3 text-left">{{ r.id }}</td>
+          <td class="px-4 py-3 font-medium text-white">{{ r.filename }}</td>
+          <td class="px-4 py-3 font-semibold {{ 'text-red-400' if r.prediction == 'Intrusion Detected' else 'text-green-400' }}">{{ '🚨' if r.prediction == 'Intrusion Detected' else '✅' }} {{ r.prediction }}</td>
+          <td class="px-4 py-3 whitespace-nowrap">{{ r.uploaded_time }}</td>
+          <td class="px-4 py-3">
+            <form method="post" action="{{ url_for('delete', log_id=r.id) }}" onsubmit="return confirm('Delete this record?')">
+              <button class="btn-red text-white text-xs font-semibold px-3 py-1 rounded">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="5" class="px-4 py-8 text-slate-300">No records yet.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

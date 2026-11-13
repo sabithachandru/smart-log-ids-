@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-6">
+  <div class="flex items-start justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-white">Dashboard</h1>
+      <p class="text-xs text-slate-300">Smart Log Monitoring and Intrusion Detection System</p>
+    </div>
+    <a href="{{ url_for('logout') }}" class="btn-red text-white text-sm font-semibold px-4 py-2 rounded-lg">Logout</a>
+  </div>
+  <h2 class="text-3xl font-extrabold text-white mt-8">Welcome, {{ session.username }} 👋</h2>
+  <p class="text-slate-300 mt-1 mb-8">Monitor logs, detect intrusions, and analyze security data in real-time.</p>
+  <div class="grid gap-6 md:grid-cols-3">
+    <a href="{{ url_for('about') }}" class="card p-6 hover:bg-slate-500/50 transition">
+      <h3 class="text-lg font-bold text-white">📘 About Project</h3>
+      <p class="text-sm text-slate-300 mt-1">Project description, objectives and technologies.</p>
+    </a>
+    <a href="{{ url_for('upload') }}" class="card p-6 hover:bg-slate-500/50 transition">
+      <h3 class="text-lg font-bold text-white">📤 Upload Log File</h3>
+      <p class="text-sm text-slate-300 mt-1">Upload system logs for AI intrusion analysis.</p>
+    </a>
+    <a href="{{ url_for('intrusion') }}" class="card p-6 hover:bg-slate-500/50 transition">
+      <h3 class="text-lg font-bold text-white">🚨 Intrusion Files</h3>
+      <p class="text-sm text-slate-300 mt-1">View all detected intrusion records.</p>
+    </a>
+    <a href="{{ url_for('normal') }}" class="card p-6 hover:bg-slate-500/50 transition">
+      <h3 class="text-lg font-bold text-white">✅ Normal Files</h3>
+      <p class="text-sm text-slate-300 mt-1">View all normal traffic log records.</p>
+    </a>
+    <a href="{{ url_for('results') }}" class="card p-6 hover:bg-slate-500/50 transition">
+      <h3 class="text-lg font-bold text-white">📊 Results</h3>
+      <p class="text-sm text-slate-300 mt-1">View prediction results and statistics.</p>
+    </a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="min-h-screen flex items-center justify-center px-4">
+  <div class="card p-8 text-center">
+    <div class="text-5xl font-extrabold text-orange-400">{{ code }}</div>
+    <p class="text-slate-200 mt-2 mb-5">{{ msg }}</p>
+    <a href="{{ url_for('index') }}" class="btn-orange text-white font-semibold px-5 py-2 rounded-lg">Back to Home</a>
+  </div>
+</div>
+{% endblock %}

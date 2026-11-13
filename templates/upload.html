@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Upload Log File{% endblock %}
+{% block content %}
+<div class="min-h-screen flex items-center justify-center px-4">
+  <div class="card w-full max-w-md p-7">
+    <h1 class="text-2xl font-extrabold text-white text-center">📤 Upload Log File</h1>
+    <p class="text-slate-200 text-xs text-center mt-1 mb-5">Upload system log files for AI based intrusion detection</p>
+    <form method="post" enctype="multipart/form-data" onsubmit="return startScan()">
+      <label class="block text-sm mb-1" for="file">Select Log File</label>
+      <input id="file" type="file" name="logfile" accept=".txt,.log,.csv" required class="w-full rounded-lg bg-white text-slate-800 text-sm p-2">
+      <button id="btn" class="btn-orange w-full text-white font-semibold py-2 rounded-lg mt-4">🚀 Upload &amp; Analyze</button>
+    </form>
+    <p class="text-center text-sm mt-4"><a class="underline" href="{{ url_for('dashboard') }}">← Back to Dashboard</a></p>
+  </div>
+</div>
+<script>
+function startScan() {
+  const f = document.getElementById('file').files[0];
+  if (f && f.size > 5 * 1024 * 1024) { alert('File is larger than 5 MB'); return false; }
+  const b = document.getElementById('btn'); b.textContent = 'Analyzing...'; b.disabled = true;
+  return true;
+}
+</script>
+{% endblock %}

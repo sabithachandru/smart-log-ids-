@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}About Project{% endblock %}
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-6">
+  <div class="flex items-start justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-white">📘 About Project</h1>
+      <p class="text-xs text-slate-300">Smart Log Monitoring and Intrusion Detection System</p>
+    </div>
+    <a href="{{ url_for('dashboard') }}" class="btn-orange text-white text-sm font-semibold px-4 py-2 rounded-lg">Dashboard</a>
+  </div>
+  <div class="grid gap-6 md:grid-cols-2 mt-8">
+    <section class="card p-6">
+      <h2 class="text-center text-lg font-bold text-orange-400 mb-3">🎯 Project Overview</h2>
+      <p class="text-sm leading-relaxed text-slate-100">The Smart Log Monitoring and Intrusion Detection System is an AI-powered cybersecurity platform that automatically analyzes system log files to detect malicious activities and security threats. This system uses Machine Learning techniques such as TF-IDF (Term Frequency-Inverse Document Frequency) and Logistic Regression to classify log data into Normal or Intrusion categories. The system improves security monitoring by increasing detection accuracy, reducing manual analysis, and providing faster and more reliable intrusion detection.</p>
+    </section>
+    <section class="card p-6">
+      <h2 class="text-center text-lg font-bold text-green-400 mb-3">✅ Objectives</h2>
+      <ul class="list-disc ml-8 space-y-1 text-sm text-slate-100">
+        <li>Automatically monitor and analyze system log files</li>
+        <li>Detect malicious activities using AI algorithms</li>
+        <li>Classify logs as Intrusion or Normal using TF-IDF and Logistic Regression</li>
+        <li>Store prediction results securely in MySQL database</li>
+        <li>Provide real-time dashboard for monitoring intrusion activities</li>
+        <li>Reduce manual effort and improve security efficiency</li>
+      </ul>
+    </section>
+    <section class="card p-6">
+      <h2 class="text-center text-lg font-bold text-sky-400 mb-3">🛠️ Technologies Used</h2>
+      <ul class="list-disc ml-8 space-y-1 text-sm text-slate-100">
+        <li>Python Flask (Backend Framework)</li>
+        <li>Machine Learning – TF-IDF Vectorizer and Logistic Regression</li>
+        <li>Scikit-learn (ML Model Training and Prediction)</li>
+        <li>MySQL Database (Data Storage)</li>
+        <li>HTML, Tailwind CSS (Frontend Design)</li>
+        <li>JavaScript (User Interaction)</li>
+      </ul>
+    </section>
+    <section class="card p-6">
+      <h2 class="text-center text-lg font-bold text-purple-400 mb-3">📦 System Modules</h2>
+      <ul class="list-disc ml-8 space-y-1 text-sm text-slate-100">
+        <li>User Authentication Module</li>
+        <li>Upload Log File Module</li>
+        <li>Machine Learning Intrusion Detection Module</li>
+        <li>Normal Log Monitoring Module</li>
+        <li>Results and Prediction Storage Module</li>
+        <li>Dashboard Visualization Module</li>
+      </ul>
+    </section>
+  </div>
+</div>
+{% endblock %}
