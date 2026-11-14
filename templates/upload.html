@@ -5,20 +5,48 @@
   <div class="card w-full max-w-md p-7">
     <h1 class="text-2xl font-extrabold text-white text-center">📤 Upload Log File</h1>
     <p class="text-slate-200 text-xs text-center mt-1 mb-5">Upload system log files for AI based intrusion detection</p>
-    <form method="post" enctype="multipart/form-data" onsubmit="return startScan()">
+    <form id="upform" method="post" enctype="multipart/form-data">
       <label class="block text-sm mb-1" for="file">Select Log File</label>
       <input id="file" type="file" name="logfile" accept=".txt,.log,.csv" required class="w-full rounded-lg bg-white text-slate-800 text-sm p-2">
+      <p id="err" class="hidden mt-3 text-sm bg-red-900/70 text-red-100 rounded-lg px-3 py-2"></p>
       <button id="btn" class="btn-orange w-full text-white font-semibold py-2 rounded-lg mt-4">🚀 Upload &amp; Analyze</button>
     </form>
     <p class="text-center text-sm mt-4"><a class="underline" href="{{ url_for('dashboard') }}">← Back to Dashboard</a></p>
   </div>
 </div>
 <script>
-function startScan() {
-  const f = document.getElementById('file').files[0];
-  if (f && f.size > 5 * 1024 * 1024) { alert('File is larger than 5 MB'); return false; }
-  const b = document.getElementById('btn'); b.textContent = 'Analyzing...'; b.disabled = true;
-  return true;
+const form = document.getElementById('upform');
+const btn = document.getElementById('btn');
+const err = document.getElementById('err');
+function showError(msg) {
+  err.textContent = msg; err.classList.remove('hidden');
+  btn.textContent = '🚀 Upload & Analyze'; btn.disabled = false;
 }
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  err.classList.add('hidden');
+  const f = document.getElementById('file').files[0];
+  if (!f) return;
+  if (f.size > 5 * 1024 * 1024) { showError('File is larger than 5 MB'); return; }
+  btn.textContent = 'Analyzing...'; btn.disabled = true;
+  try {
+    // Encode the file as base64 so security text inside the log is not blocked in transit
+    const bytes = new Uint8Array(await f.arrayBuffer());
+    let bin = '';
+    for (let i = 0; i < bytes.length; i += 0x8000) {
+      bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    }
+    const fd = new FormData();
+    fd.append('encoded', '1');
+    fd.append('orig_name', f.name);
+    fd.append('logfile', new Blob([btoa(bin)], { type: 'text/plain' }), 'upload.b64');
+    const res = await fetch(form.action || window.location.href, { method: 'POST', body: fd, credentials: 'same-origin' });
+    const data = await res.json();
+    if (data.redirect) { window.location.href = data.redirect; }
+    else { showError(data.error || 'Upload failed. Please try again.'); }
+  } catch (ex) {
+    showError('Upload failed. Please try again.');
+  }
+});
 </script>
 {% endblock %}
