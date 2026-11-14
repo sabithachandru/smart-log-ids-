@@ -15,6 +15,8 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "change-this-secret-key")
 app.config["MAX_CONTENT_LENGTH"] = 8 * 1024 * 1024  # request limit (file is base64 encoded by the browser)
 MAX_LOG_BYTES = 5 * 1024 * 1024  # real log file limit
+XOR_KEY = 0x5A  # must match the key in templates/upload.html
+XOR_TABLE = bytes(i ^ XOR_KEY for i in range(256))
 
 # ---------------------------------------------------------------------------
 # Database layer: MySQL when DB_HOST is set (XAMPP/WAMP or cloud), else SQLite
@@ -172,7 +174,8 @@ def upload():
         # The upload page base64-encodes the file in the browser (encoded=1) so that
         # attack strings inside a log (SQL injection, <script> ...) are not mistaken
         # for a real attack by the hosting firewall. Plain uploads still work too.
-        encoded = request.form.get("encoded") == "1"
+        mode = request.form.get("encoded", "")
+        encoded = mode in ("1", "2")
 
         def fail(msg):
             if encoded:
@@ -188,9 +191,14 @@ def upload():
         if encoded:
             try:
                 raw = base64.b64decode(raw)
+                if mode == "2":  # browser also scrambled the bytes (XOR) and the file name
+                    raw = raw.translate(XOR_TABLE)
+                    filename = base64.b64decode(request.form.get("orig_name", "")).decode("utf-8", "ignore")
+                else:
+                    filename = request.form.get("orig_name", "")
             except (binascii.Error, ValueError):
                 return fail("Could not read the file. Please try again.")
-            filename = request.form.get("orig_name") or "upload.txt"
+            filename = filename or "upload.txt"
         if len(raw) > MAX_LOG_BYTES:
             return fail("File too large (max 5 MB).")
         if b"\x00" in raw[:2048]:
