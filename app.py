@@ -78,10 +78,6 @@ def init_db():
         prediction VARCHAR(100) NULL,
         uploaded_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         username VARCHAR(100) NULL)""", commit=True)
-    # Demo account so reviewers / HR can log in without signing up
-    if not run("SELECT id FROM users WHERE username = ?", ("demo",), one=True):
-        run("INSERT INTO users (username, password) VALUES (?, ?)",
-            ("demo", generate_password_hash("demo123")), commit=True)
 
 
 try:
